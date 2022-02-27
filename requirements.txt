@@ -1,9 +1,9 @@
 # # musicnn/setup.py install_requires
 librosa==0.7.2
-numpy>=1.14.5
 
 # listening-moods/requirements.txt
-torch>=1.4.0
+pytorch
+pytorchaudio
 pytorch-ignite==0.4.0
 tqdm
 
