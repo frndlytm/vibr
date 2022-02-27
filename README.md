@@ -1,0 +1,82 @@
+# `vibr`: Vibe Classification
+
+CS6120 - Machine Learning Course Project
+
+## Setup
+
+### Using pip
+
+Use the following standard install
+
+```shell
+foo@bar~/path/to/project$ python -m venv .venv
+foo@bar~/path/to/project$ .venv/bin/activate
+foo@bar~/path/to/project$ pip install -r requirements.txt
+foo@bar~/path/to/project$ pip install -e ./src/vibr
+```
+
+or the following on Windows
+
+```shell
+[foo-bar] PS C:\path\to\project> python -m venv .venv
+[foo-bar] PS C:\path\to\project> .venv/Scripts/activate
+[foo-bar] PS C:\path\to\project> pip install -r requirements.txt
+[foo-bar] PS C:\path\to\project> pip install -e ./src/vibr
+```
+
+### Configure our Jupyter Kernel
+
+Configure our `.venv` to be an available IPython kernel for our jupyter notebooks.
+
+```console
+foo@bar~/path/to/project$ python -m ipykernel install --user --name=vibr
+```
+
+### Clone related projects
+
+The related projects are:
+
+1. `musicnn` <https://github.com/jordipons/musicnn>
+2. `listening-moods` <https://github.com/fdlm/listening-moods>
+
+Getting these configured as submodules was stupidly difficult due to lfs size limitations on the `data` directories, so instead I have opted to include `musicnn` in `requirements.txt` for our usage, but also clone both of these projects in the parent directory of our `vibr`.
+
+Specific installing instructions for each have been included.
+
+#### `musicnn`
+
+```console
+foo@bar~/path/to/vibr$ git clone git@github.com:jordipons/musicnn.git ../
+```
+
+#### `listening-moods`
+
+First, clone the repo, which might yield the following error...
+
+```console
+foo@bar~/path/to/vibr$ git clone git@github.com:fdlm/listening-moods.git ../
+Cloning into 'listening-moods'...
+remote: Counting objects: 100% (23/23), done.
+Receiving objects: 100% (23/23), 3.77 MiB | 6.96 MiB/s, done.
+Resolving deltas: 100% (4/4), done.
+Updating files: 100% (14/14), done.
+Downloading data/mcn_msd_big_source.npy (134 MB)
+Error downloading object: data/mcn_msd_big_source.npy (fae4e8d): Smudge error: Error downloading data/mcn_msd_big_source.npy (fae4e8dd38a4136d4b87beed9c101445f5b7c01e67753d42893ebadf0f4e5dbd): batch response: This repository is over its data quota. Account responsible for LFS bandwidth should purchase more data packs to restore access.
+
+Errors logged to .git\lfs\logs\20220227T114346.700646.log
+error: external filter 'git-lfs filter-process' failed
+fatal: data/mcn_msd_big_source.npy: smudge filter lfs failed
+warning: Clone succeeded, but checkout failed.
+You can inspect what was checked out with 'git status'
+and retry with 'git restore --source=HEAD :/'
+```
+
+This is a known issue and can be resolved by donwloading a `data.tar.gz` via the README on the `listening-moods` repo and manually extracting it into the data directory.
+
+## Maintenance
+
+(Untested) We can maintain code-style configured in `pyproject.yaml` through:
+
+```console
+foo@bar~/path/to/vibr$ ./scripts/notebook-format ./notebooks/notebook
+```
