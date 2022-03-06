@@ -4,33 +4,34 @@ CS6120 - Machine Learning Course Project
 
 ## Setup
 
-### Using pip
+Use the following commands for a standard enviornment install.
 
-Use the following standard install
+### Create a New Environment
 
-```shell
-foo@bar~/path/to/project$ python -m venv .venv
-foo@bar~/path/to/project$ .venv/bin/activate
-foo@bar~/path/to/project$ pip install -r requirements.txt
-foo@bar~/path/to/project$ pip install -e ./src/vibr
+```PowerShell
+[frndlytm] PS vibr> conda env create -f environment.yml
+[frndlytm] PS vibr> conda develop ./src
 ```
 
-or the following on Windows
+The first command creates a vibr environment in your `conda` envs. The second mounts `./src` in develop mode so that you can import from the packages inside it.
 
-```shell
-[foo-bar] PS C:\path\to\project> python -m venv .venv
-[foo-bar] PS C:\path\to\project> .venv/Scripts/activate
-[foo-bar] PS C:\path\to\project> pip install -r requirements.txt
-[foo-bar] PS C:\path\to\project> pip install -e ./src/vibr
+### Update an Existing Environment
+
+After the environment is created, you can synchronize any future changes into your existing environment via the following command.
+
+```PowerShell
+[frndlytm] PS vibr> conda env create -f environment.yml
 ```
 
-### Configure our Jupyter Kernel
+### Freezing an Existing Environment
 
-Configure our `.venv` to be an available IPython kernel for our jupyter notebooks.
+After updating any packages, you _should_ freeze your changed environment to the `environment.yml` file via the following command.
 
-```console
-foo@bar~/path/to/project$ python -m ipykernel install --user --name=vibr
+```PowerShell
+[frndlytm] PS vibr> conda env export > environment.yml
 ```
+
+This is important to ensure we all stay synchonized and our code ports well.
 
 ### Clone related projects
 
@@ -45,16 +46,16 @@ Specific installing instructions for each have been included.
 
 #### `musicnn`
 
-```console
-foo@bar~/path/to/vibr$ git clone git@github.com:jordipons/musicnn.git ../
+```PowerShell
+[frndlytm] PS vibr> git clone git@github.com:jordipons/musicnn.git ../
 ```
 
 #### `listening-moods`
 
 First, clone the repo, which might yield the following error...
 
-```console
-foo@bar~/path/to/vibr$ git clone git@github.com:fdlm/listening-moods.git ../
+```PowerShell
+[frndlytm] PS vibr> git clone git@github.com:fdlm/listening-moods.git ../
 Cloning into 'listening-moods'...
 remote: Counting objects: 100% (23/23), done.
 Receiving objects: 100% (23/23), 3.77 MiB | 6.96 MiB/s, done.
@@ -77,6 +78,6 @@ This is a known issue and can be resolved by donwloading a `data.tar.gz` via the
 
 (Untested) We can maintain code-style configured in `pyproject.yaml` through:
 
-```console
-foo@bar~/path/to/vibr$ ./scripts/notebook-format ./notebooks/notebook
+```PowerShell
+[frndlytm] PS vibr> ./scripts/notebook-format ./notebooks/notebook
 ```

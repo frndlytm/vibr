@@ -1,3 +1,1 @@
-#!/bin/bash
-
 jupyter nbconvert "./notebooks/$1.ipynb" --to latex

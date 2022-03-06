@@ -1,5 +1,3 @@
-#!/bin/bash
-
 jupytext --to python "$1.ipynb";
 black "$1.py";
 isort "$1.py";
