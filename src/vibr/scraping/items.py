@@ -7,15 +7,23 @@ import scrapy
 
 
 class AlbumItem(scrapy.Item):
-    _id_ = scrapy.Field()
+    _artist_ = scrapy.Field()
+    _album_ = scrapy.Field()
     title = scrapy.Field()
-    genres = scrapy.Field()
-    songs = scrapy.Field()
+    genre = scrapy.Field()
+    duration = scrapy.Field()
+    styles = scrapy.Field()
+    moods = scrapy.Field()
+    themes = scrapy.Field()
 
 
 class SongItem(scrapy.Item):
-    _id_ = scrapy.Field()
+    _song_ = scrapy.Field()
+    _album_ = scrapy.Field()
+    tracknum = scrapy.Field()
     title = scrapy.Field()
+    duration = scrapy.Field()
     genres = scrapy.Field()
     styles = scrapy.Field()
     moods = scrapy.Field()
+    themes = scrapy.Field()
