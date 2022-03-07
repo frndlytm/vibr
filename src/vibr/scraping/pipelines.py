@@ -5,7 +5,7 @@
 
 
 # useful for handling different item types with a single interface
-
+import os
 import json
 from functools import singledispatchmethod
 
@@ -13,6 +13,8 @@ from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 
 from . import items
+
+here = os.path.dirname(os.path.abspath(__file__))
 
 
 class DuplicatesPipeline:
@@ -37,10 +39,10 @@ class MSDFilterPipeline:
         ...
 
 
-class JsonLinesWriterPipeline:
+class JsonLinesWritePipeline:
     def open_spider(self, spider):
-        self.albums = open('albums.jl', 'w')
-        self.songs = open('songs.jl', 'w')
+        self.albums = open(os.path.join(here, "data", "albums.jl"), "w+")
+        self.songs = open(os.path.join(here, "data", "songs.jl"), "w+")
 
     def close_spider(self, spider):
         self.albums.close()
@@ -57,7 +59,7 @@ class JsonLinesWriterPipeline:
         return item
 
     @process_item.register(items.SongItem)
-    def process_album(self, item, spider):
+    def process_song(self, item, spider):
         line = json.dumps(ItemAdapter(item).asdict()) + "\n"
         self.songs.write(line)
         return item

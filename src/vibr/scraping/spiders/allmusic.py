@@ -4,9 +4,9 @@ from scrapy.spiders import SitemapSpider
 from vibr.scraping.items import AlbumItem, SongItem
 
 
-class AllmusicSpider(SitemapSpider):
+class AllMusicSpider(SitemapSpider):
     name = "allmusic"
-    sitemap_urls = ["https://www.allmusic.com/sitemaps/sitemap-32.xml"]
+    sitemap_urls = ["https://www.allmusic.com/sitemap.xml"]
     allowed_domains = ['allmusic.com']
     sitemap_rules = [
         ("/album/", "parse_album",),
@@ -19,7 +19,7 @@ class AllmusicSpider(SitemapSpider):
         # Extract all track-level info
         for track in tracks.css("table tr.track"):
             url = track.css("div.title a::attr(href)").get()
-            request = response.follow(url + "/attributes", self.parse_song_attributes)
+            request = response.follow(url + "/attributes", self.parse_song)
             request.meta.update({"_album_": response.url, "track": track})
             yield request
 
@@ -27,15 +27,15 @@ class AllmusicSpider(SitemapSpider):
         yield AlbumItem(
             _album_=response.url,
             _artist_=response.css("header .album-artist a::attr(href)").get(),
-            title=basic_info.css(".album-title").get(),
-            genre=basic_info.xpath("//div[@class='genre']/text()").get(),
-            duration=basic_info.xpath("//div[@class='duration']/span/text()").get(),
-            styles=basic_info.xpath("//div[@class='styles']/*/a/text()").getall(),
-            moods=basic_info.xpath("//div[@class='moods']/*/a/text()").getall(),
-            themes=basic_info.xpath("//div[@class='themes']/*/a/text()").getall(),
+            title=response.css("header .album-title").get(),
+            duration=basic_info.css("div.duration span::text").get(),
+            genre=basic_info.css("div.genre::text").getall(),
+            styles=basic_info.css("div.styles a::text").getall(),
+            moods=basic_info.css("div.moods a::text").getall(),
+            themes=basic_info.css("div.themes a::text").getall(),
         )
 
-    def parse_song_attributes(self, response):
+    def parse_song(self, response):
         attributes = response.css("section.attributes")
 
         yield SongItem(
