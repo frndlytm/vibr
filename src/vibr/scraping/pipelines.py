@@ -5,32 +5,53 @@
 
 
 # useful for handling different item types with a single interface
+import logging
 import os
-import json
-from functools import singledispatchmethod
+from typing import Type
 
+import pydantic
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 
-from . import items
-
-here = os.path.dirname(os.path.abspath(__file__))
+from . import constants, items
 
 
-class DuplicatesPipeline:
-    def __init__(self):
-        self.ids_seen = set()
+class DropDuplicates:
+    model: Type = None
+
+    def __init__(self, model: Type[pydantic.BaseModel]):
+        self.seen = set()
+        self.model = model
 
     def process_item(self, item, spider):
-        adapter = ItemAdapter(item)
-        if adapter['id'] in self.ids_seen:
-            raise DropItem(f"Duplicate item found: {item!r}")
+        if isinstance(item, self.model):
+            adapter = ItemAdapter(item)
+            if adapter['id'] in self.seen:
+                raise DropItem(f"Duplicate item found: {item!r}")
+            else:
+                self.seen.add(adapter['id'])
+                return item
+
         else:
-            self.ids_seen.add(adapter['id'])
             return item
 
 
-class MSDFilterPipeline:
+class DropDuplicateAlbums:
+    def __init__(self):
+        super().__init__(model=items.AlbumItem)
+
+
+class DropDuplicateArtists:
+    def __init__(self):
+        super().__init__(model=items.ArtistItem)
+
+
+class DropDuplicateSongs:
+    def __init__(self):
+        super().__init__(model=items.SongItem)
+
+
+class MSDDropPipeline:
     """
     MSDFilterPipeline is a step to compare with the Million Songs Dataset
     like the paper while extracting."
@@ -39,27 +60,47 @@ class MSDFilterPipeline:
         ...
 
 
-class JsonLinesWritePipeline:
+class JsonLinesWriter:
+    def __init__(self, path: str, model: Type[pydantic.BaseModel]):
+        self.path = path
+        self.model = model
+
     def open_spider(self, spider):
-        self.albums = open(os.path.join(here, "data", "albums.jl"), "w+")
-        self.songs = open(os.path.join(here, "data", "songs.jl"), "w+")
+        self.file = open(self.path, "w+")
 
     def close_spider(self, spider):
-        self.albums.close()
-        self.songs.close()
+        self.file.close()
 
-    @singledispatchmethod
     def process_item(self, item, spider):
-        pass
+        try: 
+            obj = pydantic.parse_obj_as(self.model, item)
+            line = obj.json() + "\n"
+            self.file.write(line)
+        # except:
+        #     logging.exception(f"Failed to parse {str(item)}")
+        finally:
+            return item
 
-    @process_item.register(items.AlbumItem)
-    def process_album(self, item, spider):
-        line = json.dumps(ItemAdapter(item).asdict()) + "\n"
-        self.albums.write(line)
-        return item
 
-    @process_item.register(items.SongItem)
-    def process_song(self, item, spider):
-        line = json.dumps(ItemAdapter(item).asdict()) + "\n"
-        self.songs.write(line)
-        return item
+class AlbumJsonLinesWriter(JsonLinesWriter):
+    def __init__(self):
+        super().__init__(
+            path=os.path.join(constants.DATADIR, "raw", "albums.jl"),
+            model=items.AlbumItem,
+        )
+
+
+class ArtistJsonLinesWriter(JsonLinesWriter):
+    def __init__(self):
+        super().__init__(
+            path=os.path.join(constants.DATADIR, "raw", "artists.jl"),
+            model=items.ArtistItem,
+        )
+
+
+class SongJsonLinesWriter(JsonLinesWriter):
+    def __init__(self):
+        super().__init__(
+            path=os.path.join(constants.DATADIR, "raw", "songs.jl"),
+            model=items.SongItem,
+        )

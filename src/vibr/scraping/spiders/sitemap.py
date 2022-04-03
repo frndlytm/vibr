@@ -1,11 +1,10 @@
-import scrapy
 from scrapy.spiders import SitemapSpider
 
 from vibr.scraping.items import AlbumItem, SongItem
 
 
-class AllMusicSpider(SitemapSpider):
-    name = "allmusic"
+class AllMusicSitemapSpider(SitemapSpider):
+    name = "allmusic.sitemap"
     sitemap_urls = ["https://www.allmusic.com/sitemap.xml"]
     allowed_domains = ['allmusic.com']
     sitemap_rules = [
