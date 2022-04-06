@@ -84,7 +84,7 @@ class AllMusicSearchSpider(AllMusicSpider):
     def start_requests(self):
         metadata = pd.read_csv(os.path.join(DATADIR, "metadata.csv"))
         for artist in metadata.artist_name.unique().tolist():
-            url = f"https://www.allmusic.com/search/artists/{quote(artist)}"
+            url = f"https://www.allmusic.com/search/songs/{quote(artist)}"
             yield scrapy.Request(url, self.follow_top_result)
 
     def follow_top_result(self, response):
