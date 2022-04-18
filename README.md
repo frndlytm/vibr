@@ -81,3 +81,25 @@ This is a known issue and can be resolved by donwloading a `data.tar.gz` via the
 ```PowerShell
 [frndlytm] PS vibr> ./scripts/notebook-format ./notebooks/notebook
 ```
+
+## running on cluster
+
+### using git lfs
+download from website https://github.com/git-lfs/git-lfs/releases/tag/v3.1.2
+
+```sh
+$ wget https://github.com/git-lfs/git-lfs/releases/download/v3.1.2/git-lfs-linux-amd64-v3.1.2.tar.gz
+```
+extract file
+```sh
+$ tar -xf {path to git lfs}/git-lfs-linux-amd64-v3.1.2.tar.gz
+```
+add git lfs to path
+```sh
+$ PATH="{path to git lfs}/git-lfs-v3.1.2:$PATH"
+```
+using git-lfs executable as you would with fit lfs
+```sh
+$ cd {path to git lfs}/git-lfs-v3.1.2
+$ ./git-lfs -h
+```
