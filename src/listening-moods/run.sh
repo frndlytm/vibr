@@ -2,8 +2,6 @@
 #SBATCH --job-name=listening_mood.%j
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=100Gb
-#SBATCH --partition=netsi_standard
-#SBATCH -t 5-00:00
 #SBATCH --output=listening_mood.%j.out
 #SBATCH --mail-user=$USER@northeastern.edu
 #SBATCH --mail-type=FAIL
