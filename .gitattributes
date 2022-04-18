@@ -3,3 +3,4 @@
 *.sh text eol=lf
 data/**/*.jl filter=lfs diff=lfs merge=lfs -text
 *.jl filter=lfs diff=lfs merge=lfs -text
+*.pt filter=lfs diff=lfs merge=lfs -text
