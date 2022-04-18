@@ -84,6 +84,21 @@ This is a known issue and can be resolved by donwloading a `data.tar.gz` via the
 
 ## running on cluster
 
+### useful commands
+
+run model as batch script
+```sh
+$ cd {path to repo}/src/listening-moods
+$ sbatch run.sh
+```
+doing interactive development (note: git does not on the compute node, only on the login node)
+```sh
+$ srun --pty bash 
+```
+to use vscode on cluster, see https://code.visualstudio.com/docs/remote/ssh-tutorial
+
+to use jupyter notebooks on the cluster, see https://rc-docs.northeastern.edu/en/latest/using-ood/introduction.html
+
 ### using git lfs
 download from website https://github.com/git-lfs/git-lfs/releases/tag/v3.1.2
 
