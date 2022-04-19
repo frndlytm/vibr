@@ -14,9 +14,9 @@ from torch import nn, optim
 from torch.utils.data import DataLoader
 from sklearn.preprocessing import StandardScaler
 
-import vibr
-from vibr import constants, data, trainer
-from vibr.model import MultiLayerPerceptron
+import src.vibr
+from src.vibr import constants, data, trainer, plotting
+from src.vibr.model import MultiLayerPerceptron
 
 
 class FilterIgniteLogs(logging.Filter):
@@ -145,6 +145,10 @@ def cli():
     "--no-save", is_flag=True, show_default=True, type=bool, default=False,
     help="Save the model state after running."
 )
+@click.option(
+    "--plot-result", is_flag=True, show_default=True, type=bool, default=False,
+    help="Plot result after running."
+)
 def train(
     name: str,
     layers: int = 4,
@@ -155,7 +159,8 @@ def train(
     batch_size: int = 128,
     workers: int = 4,
     seed: Optional[int] = None,
-    no_save: bool = False
+    no_save: bool = False,
+    plot_result: bool = False
 ):
     run_id = f"{name}-{current_milli_time()}"
 
@@ -203,6 +208,8 @@ def train(
         warnings.simplefilter('ignore')
         pipeline.run(train_loader, max_epochs=epochs)
 
+    if  plot_result:
+        plotting.plot_result(os.path.join(constants.DATA_DIR, "logs", f"{run_id}.log.jsonl"), units, dropout, lr, os.path.join(constants.RESULT_DIR, "figures", f"{run_id}"))
     # Save (or don't) the model state for futher testing
     if no_save: return
     torch.save(model.state_dict(), os.path.join(constants.MODELS_DIR, f"{run_id}.pt"))

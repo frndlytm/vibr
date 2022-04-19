@@ -5,7 +5,8 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 
-from vibr import constants
+# from vibr import constants
+import src.vibr.constants as constants
 
 
 def load(data_dir: str = constants.DATA_DIR):
