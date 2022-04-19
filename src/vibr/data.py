@@ -1,6 +1,7 @@
 from os import path
 
 import numpy as np
+import random
 
 import torch
 from torch.utils.data import DataLoader, TensorDataset
@@ -15,6 +16,11 @@ def load(data_dir: str = constants.DATA_DIR):
     moods = np.load(path.join(data_dir, f'moods_target_trimmed.npy'), allow_pickle=True)
     moods = np.stack(moods[:, 1]).astype(float)
 
+    idx = list(range(features.shape[0]))
+    random.shuffle(idx)
+    features = features[idx]
+    moods = moods[idx]
+
     # TODO:
     #     TITLE: Uncomment to use shared splits
     #     AUTHOR: frndlytm
@@ -25,7 +31,7 @@ def load(data_dir: str = constants.DATA_DIR):
     #     np.load(path.join(datadir, f'val_idx.npy')),
     #     np.load(path.join(datadir, f'test_idx.npy')),
     # )
-    size = int(features.shape[1])
+    size = int(features.shape[0])
     train_size, valid_size, test_size = (
         int(0.6 * size), int(0.2 * size), int(0.2 * size),
     )

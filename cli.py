@@ -5,6 +5,7 @@ import os
 import random
 import time
 import warnings
+import pathlib
 from typing import Optional, Set
 
 import click
@@ -163,10 +164,14 @@ def train(
     plot_result: bool = False
 ):
     run_id = f"{name}-{current_milli_time()}"
+    output_path = os.path.join(constants.MODELS_DIR, f"{layers}-{units}-{dropout}-{lr}-{epochs}-{batch_size}-{workers}-{seed}", f"{run_id}")
+
+    pathlib.Path(output_path).mkdir(parents=True, exist_ok=True)
 
     # Configure the run to save statistics
     set_seed(seed)
-    configure_logging(os.path.join(constants.DATA_DIR, "logs", f"{run_id}.log.jsonl"))
+    # configure_logging(os.path.join(constants.DATA_DIR, "logs", f"{run_id}.log.jsonl"))
+    configure_logging(os.path.join(output_path, f"{run_id}.log.jsonl"))
 
     # Load and split data
     d_in, d_out, datasets = data.load().values()
@@ -209,10 +214,11 @@ def train(
         pipeline.run(train_loader, max_epochs=epochs)
 
     if  plot_result:
-        plotting.plot_result(os.path.join(constants.DATA_DIR, "logs", f"{run_id}.log.jsonl"), units, dropout, lr, os.path.join(constants.RESULT_DIR, "figures", f"{run_id}"))
+        # plotting.plot_result(os.path.join(constants.DATA_DIR, "logs", f"{run_id}.log.jsonl"), units, dropout, lr, os.path.join(constants.RESULT_DIR, "figures", f"{run_id}"))
+        plotting.plot_result(os.path.join(output_path, f"{run_id}.log.jsonl"), units, dropout, lr, os.path.join(output_path, f"{run_id}"))
     # Save (or don't) the model state for futher testing
     if no_save: return
-    torch.save(model.state_dict(), os.path.join(constants.MODELS_DIR, f"{run_id}.pt"))
+    torch.save(model.state_dict(), os.path.join(output_path,f"{run_id}.pt"))
 
 
 @cli.command()

@@ -8,6 +8,6 @@ RESULT_DIR = path.join(PROJECT_DIR, "results")
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 DEFAULT_SEED = 100
-DEFAULT_BATCH_SIZE = 128
+DEFAULT_BATCH_SIZE = 2000
 DEFAULT_WORKERS = 4
 
