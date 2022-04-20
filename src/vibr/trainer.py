@@ -22,7 +22,8 @@ from ignite.metrics import (
     RunningAverage,
 )
 
-from vibr import constants
+# from vibr import constants
+import src.vibr.constants as constants
 
 
 def classify_at_threshold(
